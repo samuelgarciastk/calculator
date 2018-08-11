@@ -16,4 +16,9 @@ public class Result {
   public boolean hasCompileError() {
     return hasCompileError;
   }
+
+  @Override
+  public String toString() {
+    return !hasCompileError ?  String.valueOf(value) : "Compile Error";
+  }
 }

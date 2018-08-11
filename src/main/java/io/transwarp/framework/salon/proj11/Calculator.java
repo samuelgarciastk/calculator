@@ -1,5 +1,11 @@
 package io.transwarp.framework.salon.proj11;
 
-public interface Calculator {
-  public Result calculate(String exp);
+
+
+public abstract class Calculator {
+
+  public Calculator() {}
+
+  public abstract Result calculate(String exp);
+
 }
