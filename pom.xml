@@ -9,8 +9,9 @@
     <packaging>jar</packaging>
     <version>1.0.0</version>
 
-
     <properties>
+        <scala.version>2.11.8</scala.version>
+        <scala.macros.version>2.0.1</scala.macros.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -30,17 +31,89 @@
     </dependencies>
 
     <build>
-
         <plugins>
-
             <!-- the Maven compiler plugin will compile Java source files -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <outputDirectory>${project.build.directory}/scala-2.11</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-jar-on-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile-first</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-scaladocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                    <recompileMode>incremental</recompileMode>
+                    <useZincServer>true</useZincServer>
+                    <args>
+                        <arg>-unchecked</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                        <arg>-language:postfixOps</arg>
+                    </args>
+                    <jvmArgs>
+                        <jvmArg>-Xms4096m</jvmArg>
+                        <jvmArg>-Xmx4096m</jvmArg>
+                        <jvmArg>-XX:PermSize=1024m</jvmArg>
+                        <jvmArg>-XX:MaxPermSize=1024m</jvmArg>
+                    </jvmArgs>
+                    <!--
+                    <javacArgs>
+                        <javacArg>-source</javacArg>
+                        <javacArg>${java.version}</javacArg>
+                        <javacArg>-target</javacArg>
+                        <javacArg>${java.version}</javacArg>
+                    </javacArgs>
+                    -->
+                    <!--
+                    <compilerPlugins>
+                        <compilerPlugin>
+                            <groupId>org.scalamacros</groupId>
+                            <artifactId>paradise_${scala.version}</artifactId>
+                            <version>${scala.macros.version}</version>
+                        </compilerPlugin>
+                    </compilerPlugins>
+                    -->
                 </configuration>
             </plugin>
         </plugins>
